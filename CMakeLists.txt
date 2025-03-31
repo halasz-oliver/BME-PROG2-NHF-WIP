@@ -15,4 +15,14 @@ add_executable(BME_PROG1_NHF
         switch.cpp switch.h
         memtrace.cpp)
 
-target_include_directories(BME_PROG1_NHF PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(BME_PROG1_TEST
+        test.cpp
+        alarm.cpp alarm.h
+        component.h
+        logicalgate.cpp logicalgate.h
+        sensor.cpp sensor.h
+        switch.cpp switch.h
+        memtrace.cpp)
+
+
+target_include_directories(BME_PROG1_TEST PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
