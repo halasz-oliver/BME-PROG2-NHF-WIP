@@ -1,9 +1,23 @@
-Választott feladat:
-"Szerverfarm
-Tervezzen objektummodellt számítógépek üzemeltetését segítő felügyeleti rend-
-szer működésének modellezésére! A modellben legyenek érzékelők (diszk kapaci-
-tás, memória kapacitás, processzor terheltség, szerverszoba hőmérséklet, tűzjel-
-ző, stb.), logikai kapuk (és, vagy, nem) kapcsolók, és vészcsengő! Tetszőlegesen
-bonyolult modell legyen felépíthető a komponensek és a logikai kapuk egyszerű
-összekapcsolásával! Demonstrálja a működést külön modulként fordított teszt-
-programmal! A megoldáshoz ne használjon STL tárolót!"
+# Választott feladat: Szerverfarm
+
+## Feladatleírás
+Tervezzen objektummodellt számítógépek üzemeltetését segítő felügyeleti rendszer működésének modellezésére!  
+
+### Követelmények:
+- A modell tartalmazzon különböző **érzékelőket**, például:
+  - Diszk kapacitás
+  - Memória kapacitás
+  - Processzor terheltség
+  - Szerverszoba hőmérséklet
+  - Tűzjelző stb.
+- **Logikai kapuk**: 
+  - ÉS (AND)
+  - VAGY (OR)
+  - NEM (NOT)
+- **Kapcsolók**
+- **Vészcsengő**
+
+### Funkcionalitás:
+- A komponensek és logikai kapuk egyszerű összekapcsolásával tetszőlegesen bonyolult modell építhető fel.
+- A működést egy **külön modulként fordított tesztprogrammal** kell demonstrálni.
+- **STL tárolók használata nem megengedett!**
