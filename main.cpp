@@ -64,7 +64,7 @@ int main() {
     std::cout << "\nLogikai kapuk állapota:" << std::endl;
     std::cout << "Erőforrás kritikus: " << (criticalResourcesGate.getState() ? "IGEN" : "NEM") << std::endl;
     std::cout << "Környezeti probléma: " << (environmentalIssuesGate.getState() ? "IGEN" : "NEM") << std::endl;
-    std::cout << "Nem karbantartás: " << (maintenanceGate.getState() ? "IGAZ" : "HAMIS") << std::endl;
+    std::cout << "Karbantartás?: " << (maintenanceGate.getState() ? "IGEN" : "NEM") << std::endl;
     std::cout << "Riasztás feltételek: " << (finalAlarmTrigger.getState() ? "TELJESÜLNEK" : "NEM TELJESÜLNEK") << std::endl;
 
     std::cout << "\nRiasztás állapota: " << (serverAlarm.getState() ? "AKTÍV" : "INAKTÍV") << std::endl;
