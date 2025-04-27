@@ -6,7 +6,7 @@
 #include "alarm.h"
 
 int main() {
-    GTINIT();  // Tesztelő környezet inicializálása
+    GTINIT(std::cin);  // Tesztelő környezet inicializálása
 
     // Sensor osztályok tesztjei
     TEST(Sensor, BasicFunctionality) {

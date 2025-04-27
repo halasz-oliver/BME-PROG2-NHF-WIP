@@ -4,10 +4,10 @@
 // Absztrakt Component osztály, amely alapja minden rendszerkomponensnek
 class component {
 public:
-    virtual ~component() {}
+    virtual ~component() = default;
 
     // Minden komponens legfontosabb metódusa az állapot lekérdezése
-    virtual bool getState() const = 0;
+    [[nodiscard]] virtual bool getState() const = 0;
 };
 
 #endif // COMPONENT_H

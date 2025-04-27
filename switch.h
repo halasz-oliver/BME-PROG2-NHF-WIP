@@ -1,7 +1,7 @@
 #ifndef SWITCH_H
 #define SWITCH_H
 
-#include "Component.h"
+#include "component.h"
 
 // Kapcsoló osztály
 class Switch : public component {

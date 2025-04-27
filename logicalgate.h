@@ -1,7 +1,7 @@
 #ifndef LOGICALGATE_H
 #define LOGICALGATE_H
 
-#include "Component.h"
+#include "component.h"
 
 // Absztrakt logikai kapu osztály
 class LogicalGate : public component {
