@@ -9,9 +9,13 @@ private:
     bool isOn;
 
 public:
+    // Konstruktor: kezdeti állapot beállítása
     Switch(bool initialState = false) : isOn(initialState) {}
 
+    // Állapot változtatása
     void toggle();
+
+    // Aktuális állapot lekérdezése
     bool getState() const override;
 };
 

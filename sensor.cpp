@@ -1,10 +1,11 @@
 #include "sensor.h"
 
+// Aktuális érték beállítása
 void Sensor::setValue(int newValue) {
-    // Skeleton: Az aktuális érték beállítása
+    currentValue = newValue;
 }
 
+// Állapot lekérdezése küszöb alapján
 bool Sensor::getState() const {
-    // Skeleton: Visszaadja, hogy a szenzor értéke átlépte-e a küszöbértéket
-    return false;
+    return currentValue >= threshold;
 }

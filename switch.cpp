@@ -1,10 +1,11 @@
 #include "switch.h"
 
+// Kapcsoló állapotának megfordítása
 void Switch::toggle() {
-    // Skeleton: Kapcsoló állapotának változtatása
+    isOn = !isOn;
 }
 
+// Kapcsoló aktuális állapotának lekérdezése
 bool Switch::getState() const {
-    // Skeleton: Visszaadja a kapcsoló állapotát
-    return false;
+    return isOn;
 }

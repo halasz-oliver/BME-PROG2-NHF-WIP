@@ -6,128 +6,141 @@
 #include "alarm.h"
 
 int main() {
-    GTINIT(std::cin);  // Tesztelő környezet inicializálása
+    GTINIT(std::cin);
 
-    // Sensor osztályok tesztjei
-    TEST(Sensor, BasicFunctionality) {
-        DiskCapacitySensor diskSensor(80);
+    // Szenzor működés: küszöb ellenőrzés
+    TEST(Sensor, ValueAndThresholdLogic) {
+        DiskCapacitySensor disk(80);
+        disk.setValue(50);
+        EXPECT_EQ(false, disk.getState()) << "Diszk 50% → nem kéne riasztani";
 
-        diskSensor.setValue(70);
-        EXPECT_EQ(false, diskSensor.getState()) << "Az érzékelőnek inaktívnak kellene lennie 70% alatt";
+        disk.setValue(85);
+        EXPECT_EQ(true, disk.getState()) << "Diszk 85% → riasztania kell";
 
-        diskSensor.setValue(85);
-        EXPECT_EQ(true, diskSensor.getState()) << "Az érzékelőnek aktívnak kellene lennie 80% felett";
+        MemoryCapacitySensor mem(75);
+        mem.setValue(74);
+        EXPECT_EQ(false, mem.getState());
+
+        mem.setValue(75);
+        EXPECT_EQ(true, mem.getState());
     } ENDM
 
-    // Switch osztály tesztjei
+    // Switch alapműködés + kezdeti állapot
     TEST(Switch, ToggleFunctionality) {
         Switch sw(false);
-
-        EXPECT_EQ(false, sw.getState()) << "Kezdeti állapot hibás";
-
-        sw.toggle();
-        EXPECT_EQ(true, sw.getState()) << "Toggle után az állapotnak változnia kellett volna";
+        EXPECT_EQ(false, sw.getState()) << "Kapcsoló kezdetben KI";
 
         sw.toggle();
-        EXPECT_EQ(false, sw.getState()) << "Második toggle után vissza kellett volna állnia";
-    } ENDM
+        EXPECT_EQ(true, sw.getState()) << "Kapcsoló BE";
 
-    // Logical Gate tesztek
-    TEST(ANDGate, LogicTest) {
-        ANDGate andGate;
-        Switch sw1(true);
+        sw.toggle();
+        EXPECT_EQ(false, sw.getState()) << "Kapcsoló vissza KI";
+
         Switch sw2(true);
-        Switch sw3(false);
-
-        andGate.addInput(&sw1);
-        andGate.addInput(&sw2);
-
-        EXPECT_EQ(true, andGate.getState()) << "AND kapunak igaznak kellene lennie, ha minden bemenet igaz";
-
-        andGate.addInput(&sw3);
-        EXPECT_EQ(false, andGate.getState()) << "AND kapunak hamisnak kellene lennie, ha bármely bemenet hamis";
+        EXPECT_EQ(true, sw2.getState()) << "Kapcsoló kezdetben BE";
     } ENDM
 
-    TEST(ORGate, LogicTest) {
-        ORGate orGate;
-        Switch sw1(false);
-        Switch sw2(false);
+    // ANDGate működésének teljes ellenőrzése
+    TEST(ANDGate, LogicalOperation) {
+        Switch s1(true), s2(true), s3(false);
+        ANDGate gate;
+        gate.addInput(&s1);
+        gate.addInput(&s2);
+        EXPECT_EQ(true, gate.getState()) << "Minden bemenet true → output is true";
 
-        orGate.addInput(&sw1);
-        orGate.addInput(&sw2);
+        gate.addInput(&s3);  // false-t adunk hozzá
+        EXPECT_EQ(false, gate.getState()) << "Egy false bemenet → output false";
 
-        EXPECT_EQ(false, orGate.getState()) << "OR kapunak hamisnak kellene lennie, ha minden bemenet hamis";
-
-        sw1.toggle();  // true-ra állítjuk
-        EXPECT_EQ(true, orGate.getState()) << "OR kapunak igaznak kellene lennie, ha bármely bemenet igaz";
+        s3.toggle(); // true lesz
+        EXPECT_EQ(true, gate.getState()) << "Most minden bemenet true";
     } ENDM
 
-    TEST(NOTGate, LogicTest) {
-        NOTGate notGate;
+    // ORGate működésének teljes ellenőrzése
+    TEST(ORGate, LogicalOperation) {
+        Switch s1(false), s2(false);
+        ORGate gate;
+        gate.addInput(&s1);
+        gate.addInput(&s2);
+        EXPECT_EQ(false, gate.getState()) << "Minden bemenet false → output false";
+
+        s1.toggle(); // true
+        EXPECT_EQ(true, gate.getState()) << "Legalább egy bemenet true → output true";
+    } ENDM
+
+    // NOTGate működésének és input felülírásának tesztje
+    TEST(NOTGate, SingleInputAndOverwrite) {
         Switch sw(true);
+        NOTGate gate;
+        gate.addInput(&sw);
+        EXPECT_EQ(false, gate.getState()) << "Input true → output false";
 
-        notGate.addInput(&sw);
-        EXPECT_EQ(false, notGate.getState()) << "NOT kapunak meg kellene fordítania a bemenet értékét";
+        sw.toggle();  // false
+        EXPECT_EQ(true, gate.getState()) << "Input false → output true";
 
-        sw.toggle();  // false-ra állítjuk
-        EXPECT_EQ(true, notGate.getState()) << "NOT kapunak meg kellene fordítania a bemenet értékét";
+        // Próbáljuk felülírni új inputtal
+        Switch sw2(true);
+        gate.addInput(&sw2);  // új bemenet
+        EXPECT_EQ(false, gate.getState()) << "Új bemenet → új output érték";
     } ENDM
 
-    // Alarm tesztek
-    TEST(Alarm, TriggerTest) {
-        alarm alarm;
-        Switch trigger(false);
+    // Alarm működés: trigger állapotának követése
+    TEST(Alarm, RespondsToTriggerChange) {
+        Switch manualTrigger(false);
+        alarm a;
+        a.setTrigger(&manualTrigger);
 
-        alarm.setTrigger(&trigger);
-        alarm.update();
-        EXPECT_EQ(false, alarm.getState()) << "A riasztásnak inaktívnak kellene lennie, ha a trigger inaktív";
+        a.update();
+        EXPECT_EQ(false, a.getState()) << "Trigger false → alarm inaktív";
 
-        trigger.toggle();  // true-ra állítjuk
-        alarm.update();
-        EXPECT_EQ(true, alarm.getState()) << "A riasztásnak aktívnak kellene lennie, ha a trigger aktív";
+        manualTrigger.toggle();  // true
+        a.update();
+        EXPECT_EQ(true, a.getState()) << "Trigger true → alarm aktív";
     } ENDM
 
-    // Komplex teszt a teljes rendszerre
-    TEST(ComplexSystem, AlertCondition) {
-        // Szenzorok
-        TemperatureSensor tempSensor(30);
-        FireAlarm fireAlarm;
+    // edge case: alarm setTrigger(nullptr)
+    TEST(Alarm, NullTriggerSafe) {
+        alarm a;
+        a.setTrigger(nullptr);  // semmihez nincs csatlakoztatva
+        a.update();
+        EXPECT_EQ(false, a.getState()) << "Nincs trigger → mindig inaktív";
+    } ENDM
 
-        // Kapcsoló
+    // Logikai hálózat teszt: több komponens együttműködése
+    TEST(ComplexSystem, AlarmFromLogicalNetwork) {
+        DiskCapacitySensor disk(80);
+        TemperatureSensor temp(30);
+        FireAlarm fire;
         Switch maintenance(true);
+        Switch override(false);
 
-        // Logikai kapuk
-        ORGate envIssues;
-        envIssues.addInput(&tempSensor);
-        envIssues.addInput(&fireAlarm);
+        disk.setValue(90);  // true
+        temp.setValue(32);  // true
+        fire.setValue(0);   // false
+        maintenance.toggle(); // off → NOT true
+        override.toggle(); // toggle → true
 
-        NOTGate notMaintenance;
-        notMaintenance.addInput(&maintenance);
+        ANDGate critical;
+        critical.addInput(&disk);
 
-        ANDGate alertCondition;
-        alertCondition.addInput(&envIssues);
-        alertCondition.addInput(&notMaintenance);
+        ORGate environment;
+        environment.addInput(&temp);
+        environment.addInput(&fire);
 
-        // Riasztás
-        alarm alarm;
-        alarm.setTrigger(&alertCondition);
+        NOTGate notMaint;
+        notMaint.addInput(&maintenance);
 
-        // Teszt - karbantartási módban vagyunk, nem szabad riasztania
-        tempSensor.setValue(35);  // Hőmérséklet túl magas
-        alarm.update();
-        EXPECT_EQ(false, alarm.getState()) << "Karbantartási módban nem szabadna riasztania";
+        ANDGate allConditions;
+        allConditions.addInput(&critical);
+        allConditions.addInput(&environment);
+        allConditions.addInput(&notMaint);
+        allConditions.addInput(&override);
 
-        // Teszt - karbantartási módból kilépünk, most riasztania kell
-        maintenance.toggle();  // Kikapcsoljuk a karbantartási módot
-        alarm.update();
-        EXPECT_EQ(true, alarm.getState()) << "Riasztania kellene a magas hőmérséklet miatt";
+        alarm a;
+        a.setTrigger(&allConditions);
+        a.update();
 
-        // Teszt - ha a hőmérséklet normalizálódik, megszűnik a riasztás
-        tempSensor.setValue(25);  // Normális hőmérséklet
-        alarm.update();
-        EXPECT_EQ(false, alarm.getState()) << "Normális hőmérsékletnél nem szabadna riasztania";
+        EXPECT_EQ(true, a.getState()) << "Minden feltétel teljesül → riasztani kell";
     } ENDM
 
-    // Tesztek futtatása és eredmények kiértékelése
     return 0;
 }

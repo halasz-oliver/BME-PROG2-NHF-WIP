@@ -1,32 +1,52 @@
 #include "logicalgate.h"
 
-LogicalGate::LogicalGate() {
-    // Skeleton: Inicializálás
-}
+// Inicializálás
+LogicalGate::LogicalGate()
+    : inputs(nullptr), inputCount(0), capacity(0) { }
 
+// Dinamikus tömb felszabadítása
 LogicalGate::~LogicalGate() {
-    // Skeleton: Felszabadítás
+    delete[] inputs;
 }
 
+// Bemenet hozzáadása, kapacitás kétszerezése szükség esetén
 void LogicalGate::addInput(component* c) {
-    // Skeleton: Bemenet hozzáadása
+    if (inputCount == capacity) {
+        int newCap = (capacity == 0 ? 2 : capacity * 2);
+        component** temp = new component*[newCap];
+        for (int i = 0; i < inputCount; ++i)
+            temp[i] = inputs[i];
+        delete[] inputs;
+        inputs = temp;
+        capacity = newCap;
+    }
+    inputs[inputCount++] = c;
 }
 
+// AND: minden bemenetnek igaznak kell lennie
 bool ANDGate::getState() const {
-    // Skeleton: AND logika megvalósítása
-    return false;
+    if (inputCount == 0) return false;
+    for (int i = 0; i < inputCount; ++i)
+        if (!inputs[i]->getState())
+            return false;
+    return true;
 }
 
+// OR: legalább egy bemenetnek igaznak kell lennie
 bool ORGate::getState() const {
-    // Skeleton: OR logika megvalósítása
+    if (inputCount == 0) return false;
+    for (int i = 0; i < inputCount; ++i)
+        if (inputs[i]->getState())
+            return true;
     return false;
 }
 
+// NOT: csak egy bemenet, megfordítja az értéket
 void NOTGate::addInput(component* c) {
-    // Skeleton: NOT kapu esetén csak egy bemenet lehet
+    input = c;
 }
 
 bool NOTGate::getState() const {
-    // Skeleton: NOT logika megvalósítása
-    return false;
+    if (!input) return false;
+    return !input->getState();
 }
