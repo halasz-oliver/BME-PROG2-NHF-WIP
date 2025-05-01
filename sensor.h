@@ -3,44 +3,40 @@
 
 #include "component.h"
 
-// Absztrakt Sensor osztály, amely az érzékelők alaptípusa
+// Absztrakt szenzor
 class Sensor : public component {
 protected:
     int threshold;
     int currentValue;
 
 public:
-    Sensor(int thresh = 0) : threshold(thresh), currentValue(0) {}
-    virtual ~Sensor() {}
+    explicit Sensor(const int thresh = 0) : threshold(thresh), currentValue(0) {}
+    ~Sensor() override = default;
 
     void setValue(int newValue);
-    bool getState() const override;
+    [[nodiscard]] bool getState() const override;
 };
 
-// Különböző érzékelő típusok
-class DiskCapacitySensor : public Sensor {
+// Konkrét szenzorok
+class DiskCapacitySensor final : public Sensor {
 public:
-    DiskCapacitySensor(int thresh = 90) : Sensor(thresh) {} // Alapértelmezett küszöbérték 90%
+    explicit DiskCapacitySensor(const int thresh = 90) : Sensor(thresh) {}
 };
-
-class MemoryCapacitySensor : public Sensor {
+class MemoryCapacitySensor final : public Sensor {
 public:
-    MemoryCapacitySensor(int thresh = 80) : Sensor(thresh) {} // Alapértelmezett küszöbérték 80%
+    explicit MemoryCapacitySensor(const int thresh = 80) : Sensor(thresh) {}
 };
-
-class CpuLoadSensor : public Sensor {
+class CpuLoadSensor final : public Sensor {
 public:
-    CpuLoadSensor(int thresh = 70) : Sensor(thresh) {} // Alapértelmezett küszöbérték 70%
+    explicit CpuLoadSensor(const int thresh = 70) : Sensor(thresh) {}
 };
-
-class TemperatureSensor : public Sensor {
+class TemperatureSensor final : public Sensor {
 public:
-    TemperatureSensor(int thresh = 35) : Sensor(thresh) {} // Alapértelmezett küszöbérték 35°C
+    explicit TemperatureSensor(const int thresh = 35) : Sensor(thresh) {}
 };
-
-class FireAlarm : public Sensor {
+class FireAlarm final : public Sensor {
 public:
-    FireAlarm() : Sensor(1) {} // Tűzjelző esetén 1-es érték jelenti a tüzet
+    FireAlarm() : Sensor(1) {}
 };
 
 #endif // SENSOR_H

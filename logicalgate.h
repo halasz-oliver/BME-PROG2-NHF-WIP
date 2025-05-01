@@ -3,46 +3,44 @@
 
 #include "component.h"
 
-// Absztrakt logikai kapu osztály
+// Absztrakt logikai kapu
 class LogicalGate : public component {
 protected:
-    // Dinamikus tömb használata STL konténer helyett
     component** inputs;
     int inputCount;
     int capacity;
 
 public:
     LogicalGate();
-    virtual ~LogicalGate();
+    ~LogicalGate() override;
 
-    void addInput(component* c);
-    virtual bool getState() const override = 0;
+    virtual void addInput(component* c);
+    virtual void clearInputs();
+    [[nodiscard]] bool hasInput(component* c) const;
+    [[nodiscard]] bool getState() const override = 0;
 };
 
-// Konkrét kapu típusok
-class ANDGate : public LogicalGate {
+class ANDGate final : public LogicalGate {
 public:
-    ANDGate() : LogicalGate() {}
-    bool getState() const override;
+    ANDGate() = default;
+    [[nodiscard]] bool getState() const override;
 };
 
-class ORGate : public LogicalGate {
+class ORGate final : public LogicalGate {
 public:
-    ORGate() : LogicalGate() {}
-    bool getState() const override;
+    ORGate() = default;
+    [[nodiscard]] bool getState() const override;
 };
 
-class NOTGate : public LogicalGate {
+class NOTGate final : public LogicalGate {
 private:
-    // NOT kapunak csak egy bemenete lehet
     component* input;
 
 public:
-    NOTGate() : LogicalGate(), input(nullptr) {}
-
-    // Felülírjuk az addInput függvényt, hogy csak egy bemenet lehessen
-    void addInput(component* c);
-    bool getState() const override;
+    NOTGate() : input(nullptr) {}
+    void addInput(component* c) override;
+    void clearInputs() override;
+    [[nodiscard]] bool getState() const override;
 };
 
 #endif // LOGICALGATE_H

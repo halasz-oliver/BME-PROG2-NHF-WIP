@@ -1,12 +1,10 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-// Absztrakt Component osztály, amely alapja minden rendszerkomponensnek
+// Alap komponens interfész
 class component {
 public:
     virtual ~component() = default;
-
-    // Minden komponens legfontosabb metódusa az állapot lekérdezése
     [[nodiscard]] virtual bool getState() const = 0;
 };
 

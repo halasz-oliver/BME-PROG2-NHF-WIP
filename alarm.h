@@ -1,20 +1,20 @@
-#ifndef alarm_h
-#define alarm_h
+#ifndef ALARM_H
+#define ALARM_H
 
 #include "component.h"
 
-// Vészcsengő osztály
-class alarm : public component {
+// Vészcsengő
+class alarm final : public component {
 private:
     bool active;
-    component* trigger; // A komponens, ami aktiválja a vészcsengőt
+    component* trigger;
 
 public:
     alarm() : active(false), trigger(nullptr) {}
-
     void setTrigger(component* c);
-    void update(); // Frissíti az állapotot a trigger alapján
-    bool getState() const override;
+    void update();
+    [[nodiscard]] bool getState() const override;
+    [[nodiscard]] component* getTrigger() const; // ■ trigger lekérdezés
 };
 
-#endif // alarm_h
+#endif // ALARM_H

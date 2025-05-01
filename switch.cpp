@@ -1,11 +1,15 @@
 #include "switch.h"
 
-// Kapcsoló állapotának megfordítása
+// Állapot fel-/lekapcsolása
 void Switch::toggle() {
     isOn = !isOn;
 }
 
-// Kapcsoló aktuális állapotának lekérdezése
+// Explicit állapotbeállítás
+void Switch::setState(const bool s) {
+    isOn = s;
+}
+
 bool Switch::getState() const {
     return isOn;
 }

@@ -1,18 +1,24 @@
 #include "alarm.h"
 
-// Trigger komponens hozzárendelése
+// Trigger beállítása
 void alarm::setTrigger(component* c) {
     trigger = c;
 }
 
-// Aktív/inaktív állapot frissítése
+// Aktív/inaktív állapot
 void alarm::update() {
-    if (trigger) {
+    if (trigger)
         active = trigger->getState();
-    }
+    else
+        active = false;
 }
 
-// Riasztás állapotának lekérdezése
+// Állapot lekérdezése
 bool alarm::getState() const {
     return active;
+}
+
+// Aktuális trigger visszaadása
+component* alarm::getTrigger() const {
+    return trigger;
 }

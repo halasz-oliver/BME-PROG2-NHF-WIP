@@ -3,20 +3,16 @@
 
 #include "component.h"
 
-// Kapcsoló osztály
-class Switch : public component {
+// Kapcsoló manuális állítással
+class Switch final : public component {
 private:
     bool isOn;
 
 public:
-    // Konstruktor: kezdeti állapot beállítása
-    Switch(bool initialState = false) : isOn(initialState) {}
-
-    // Állapot változtatása
+    explicit Switch(const bool initialState = false) : isOn(initialState) {}
     void toggle();
-
-    // Aktuális állapot lekérdezése
-    bool getState() const override;
+    void setState(bool s);    // explicit beállítás
+    [[nodiscard]] bool getState() const override;
 };
 
 #endif // SWITCH_H
